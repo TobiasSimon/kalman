@@ -1,3 +1,18 @@
+
+/*
+ * file: kalman_meschach.c
+ *
+ * implements kalman filter for linear system:
+ *
+ * | 1 dt | * | p | + | 0.5 * dt ^ 2 | * | a | = | p |
+ * | 0  1 | * | v |   |     dt       |   | v |
+ *
+ * authors:
+ * Tobias Simon, Ilmenau University of Technology
+ * Jan Roemisch, Ilmenau University of Technology
+ */
+
+
 #include <meschach/matrix.h>
 #include <meschach/matrix2.h>
 
@@ -79,10 +94,8 @@ static void kalman_init(kalman_t *kf, float dt, float q, float r, float pos, flo
 
 static void kalman_predict(kalman_t *kf, float a)
 {
-   /* predict: */
-   v_set_val(kf->u, 0, a);
- 
    /* x_prd = A * x_est + B * u */
+   v_set_val(kf->u, 0, a);
    mv_mlt(kf->A, kf->x, kf->t0);
    mv_mlt(kf->B, kf->u, kf->t1);
    v_add(kf->t0, kf->t1, kf->x);
@@ -143,4 +156,3 @@ kalman_t *kalman_create(const kalman_config_t *config, const kalman_out_t *init_
    kalman_init(kalman, config->dt, config->process_var, config->measurement_var, init_state->pos, init_state->speed);
    return kalman;
 }
-
