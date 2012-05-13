@@ -10,7 +10,6 @@ struct kalman
 {
    /* filter set-up and state variables: */
    VEC *x; /* state (location and velocity) */
-   VEC *y; /* output vector */
    VEC *z; /* measurement (location) */
    MAT *A; /* system transisiton */
    MAT *B; /* control transition */
@@ -33,7 +32,6 @@ struct kalman
 static void kalman_init(kalman_t *kf, float dt, float q, float r, float pos, float speed)
 {
    kf->t0 = v_get(2);
-   kf->y = v_get(2);
    kf->t1 = v_get(2);
    kf->T0 = m_get(2, 2);
    kf->T1 = m_get(2, 2);
@@ -122,7 +120,6 @@ static void kalman_correct(kalman_t *kf, float p, float v)
    m_sub(kf->I, kf->T0, kf->T1);
    m_mlt(kf->T1, kf->P, kf->T0);
    m_copy(kf->T0, kf->P);
-   v_add(kf->x, kf->z, kf->y);
 }
 
 
@@ -133,8 +130,8 @@ void kalman_run(kalman_out_t *out, kalman_t *kalman, const kalman_in_t *in)
 {
    kalman_predict(kalman, in->acc);
    kalman_correct(kalman, in->pos, 0.0);
-   out->pos = v_entry(kalman->y, 0);
-   out->speed = v_entry(kalman->y, 1);
+   out->pos = v_entry(kalman->x, 0);
+   out->speed = v_entry(kalman->x, 1);
 }
 
 
