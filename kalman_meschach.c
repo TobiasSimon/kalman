@@ -1,4 +1,3 @@
-
 #include <meschach/matrix.h>
 #include <meschach/matrix2.h>
 
