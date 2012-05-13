@@ -21,20 +21,22 @@
 
 struct kalman
 {
-   /* filter set-up and state variables: */
-   VEC *x; /* state (location and velocity) */
-   VEC *z; /* measurement (location) */
-   MAT *A; /* system transisiton */
-   MAT *B; /* control transition */
-   MAT *P; /* error covariance */
-   VEC *u; /* control (acceleration) */
+   /* configuration and constant matrices: */
    MAT *Q; /* process noise */
    MAT *R; /* measurement noise */
-   MAT *H; /* measurement matrix */
-   MAT *K; /* kalman gain */
-   
-   /* support matrices and vectors: */
    MAT *I; /* identity matrix */
+
+   /* state and transition vectors/matrices: */
+   VEC *x; /* state (location and velocity) */
+   VEC *z; /* measurement (location) */
+   MAT *A; /* system matrix */
+   MAT *B; /* control matrix */
+   MAT *P; /* error covariance */
+   VEC *u; /* control (acceleration) */
+   MAT *H; /* observer matrix */
+   MAT *K; /* kalman gain */
+
+   /*  vectors and matrices for calculations: */
    VEC *t0;
    VEC *t1;
    MAT *T0;
