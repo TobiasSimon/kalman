@@ -14,7 +14,7 @@
 
 
 #include <opencv/cv.h>
-
+#include <stdio.h>
 #include "kalman.h"
 
 

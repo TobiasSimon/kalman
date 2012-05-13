@@ -67,7 +67,7 @@ static void kalman_init(kalman_t *kf, float dt, float q, float r, float pos, flo
    kf->A = m_get(2, 2);
    m_set_val(kf->A, 0, 0, 1.0);
    m_set_val(kf->A, 0, 1, dt);
-   m_set_val(kf->A, 1, 0, 1.0);
+   m_set_val(kf->A, 1, 0, 0.0);
    m_set_val(kf->A, 1, 1, 1.0);
 
    /* B = | 0.5 * dt ^ 2 |
