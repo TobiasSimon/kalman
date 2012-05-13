@@ -1,4 +1,3 @@
-
 /*
  * file: kalman_meschach.c
  *
@@ -94,7 +93,7 @@ static void kalman_init(kalman_t *kf, float dt, float q, float r, float pos, flo
 
 static void kalman_predict(kalman_t *kf, float a)
 {
-   /* x_prd = A * x_est + B * u */
+   /* x = A * x_est + B * u */
    v_set_val(kf->u, 0, a);
    mv_mlt(kf->A, kf->x, kf->t0);
    mv_mlt(kf->B, kf->u, kf->t1);
