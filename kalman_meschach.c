@@ -10,6 +10,7 @@ struct kalman
 {
    /* filter set-up and state variables: */
    VEC *x; /* state (location and velocity) */
+   VEC *y; /* output vector */
    VEC *z; /* measurement (location) */
    MAT *A; /* system transisiton */
    MAT *B; /* control transition */
@@ -32,6 +33,7 @@ struct kalman
 static void kalman_init(kalman_t *kf, float dt, float q, float r, float pos, float speed)
 {
    kf->t0 = v_get(2);
+   kf->y = v_get(2);
    kf->t1 = v_get(2);
    kf->T0 = m_get(2, 2);
    kf->T1 = m_get(2, 2);
@@ -59,7 +61,8 @@ static void kalman_init(kalman_t *kf, float dt, float q, float r, float pos, flo
    
    kf->K = m_get(2, 1);
    kf->H = m_get(2, 2);
-   m_ident(kf->H);
+   m_set_val(kf->H, 0, 0, 1.0);
+   //m_ident(kf->H);
    
    /* A = | 1.0   dt  |
           | 0.0   1.0 | */
@@ -82,7 +85,7 @@ static void kalman_predict(kalman_t *kf, float a)
    /* predict: */
    v_set_val(kf->u, 0, a);
  
-   /* x = A * x + B * u */
+   /* x_prd = A * x_est + B * u */
    mv_mlt(kf->A, kf->x, kf->t0);
    mv_mlt(kf->B, kf->u, kf->t1);
    v_add(kf->t0, kf->t1, kf->x);
@@ -105,7 +108,7 @@ static void kalman_correct(kalman_t *kf, float p, float v)
    mmtr_mlt(kf->P, kf->H, kf->T0);
    m_mlt(kf->T0, kf->T1, kf->K);
 
-   /* x = x + K * (z - H * x) */
+   /* x_est = x + K * (z - H * x) */
    mv_mlt(kf->H, kf->x, kf->t0);
    v_set_val(kf->z, 0, p);
    v_set_val(kf->z, 1, v);
@@ -119,6 +122,7 @@ static void kalman_correct(kalman_t *kf, float p, float v)
    m_sub(kf->I, kf->T0, kf->T1);
    m_mlt(kf->T1, kf->P, kf->T0);
    m_copy(kf->T0, kf->P);
+   v_add(kf->x, kf->z, kf->y);
 }
 
 
@@ -129,8 +133,8 @@ void kalman_run(kalman_out_t *out, kalman_t *kalman, const kalman_in_t *in)
 {
    kalman_predict(kalman, in->acc);
    kalman_correct(kalman, in->pos, 0.0);
-   out->pos = v_entry(kalman->x, 0);
-   out->speed = v_entry(kalman->x, 1);
+   out->pos = v_entry(kalman->y, 0);
+   out->speed = v_entry(kalman->y, 1);
 }
 
 

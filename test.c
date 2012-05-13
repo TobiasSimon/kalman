@@ -11,7 +11,7 @@ int main(void)
    
    kalman_config_t lateral_kalman_config = 
    {
-      0.03, 0.0001, 0.01
+      0.03, 0.0001, 1.01
    };
 
    /* create kalman filters: */
@@ -20,7 +20,7 @@ int main(void)
    for (i = 0; i < 1000; i++)
    {
       float z = 5.0 + 2 * (float)rand() / (float)RAND_MAX + i / 100.0;
-      float a = 0.0; //1.0 - 0.5 * (float)rand() / (float)RAND_MAX;
+      float a = 1.0 - 0.5 * (float)rand() / (float)RAND_MAX;
       kalman_in_t in = {z, a};
       kalman_out_t out;
       kalman_run(&out, kalman, &in);
