@@ -119,7 +119,7 @@ static void kalman_correct(kalman_t *kf, float p, float v)
    mmtr_mlt(kf->P, kf->H, kf->T0);
    m_mlt(kf->T0, kf->T1, kf->K);
 
-   /* x_est = x + K * (z - H * x) */
+   /* x = x + K * (z - H * x) */
    mv_mlt(kf->H, kf->x, kf->t0);
    v_set_val(kf->z, 0, p);
    v_set_val(kf->z, 1, v);
